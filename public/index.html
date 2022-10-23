@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 1: Echo</title>
+    <link rel="stylesheet" href="../styles/main.css" type="text/css">
+</head>
+
+<body>
+    <!-- Tell the browser what to show if JavaScript/TypeScript is disabled. -->
+    <noscript>This example requires JavaScript to run.</noscript>
+    <!-- Prepare a region of the page to hold the entire REPL interface -->
+    <div class="repl">
+        <!-- Prepare a region of the page to hold the command history -->
+        <div id="repl-history"></div>
+        <hr> 
+        <!-- Prepare a region of the page to hold the command input box -->
+        <div id="repl-input">
+            <input type="text" placeholder="Enter command here!" id="repl-command-box">
+        </div>
+        <button id="submit-button">Submit</button>
+    </div>
+    <!-- Load the script! Note: the .js extension is because browsers don't use TypeScript
+    directly. Instead, the author of the site needs to compile the TypeScript to JavaScript. -->
+    <script type=module src="../src/main.js"></script>
+</body>
+
+</html>
