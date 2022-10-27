@@ -1,11 +1,11 @@
 import React from 'react';
-import CommandTerminal from './CommandTerminal'
+import Terminal from './Terminal'
 import './styles/App.css';
 
 function App() {
   return (
     <div className="App">
-      <CommandTerminal />      
+      <Terminal />      
     </div>
   );
 }
