@@ -37,6 +37,14 @@ function AddToHistory({userCommand}: {userCommand: string}) {
             </div>
         );
     })
+
+    // const output : string | undefined = await processInput(userCommand)
+    // return (
+    //     <div>
+    //         <p>Command: {userCommand}</p>
+    //         <p>Output: {output}</p>
+    //     </div>
+    // );
 }
 
 export default function Terminal() {
