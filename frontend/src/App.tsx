@@ -35,15 +35,34 @@ get = function(args : Array<string>): Promise<string> {
             return Promise.resolve("Error - no file is loaded.");
           } else if (getJSON.result === "error_datasource") {
             return Promise.resolve("Error - file could not be read or parsed.");
+          } else {
+            return Promise.resolve(getJSON.data)
           }
-          return Promise.resolve(getJSON.data)
         })
+    })
+}
+
+let stats : REPLFunction
+stats = function(args : Array<string>): Promise<string> {
+  if(args.length !== 0) {
+    return Promise.resolve("Error - requires 0 arguments.")
+  }
+  return fetch(BACKEND_URL + "/stats")
+    .then((statsResponse: Response) => statsResponse.json())
+    .then((statsJSON) => {
+      if(statsJSON.result === "error_bad_request") {
+        return Promise.resolve("Error - no file is loaded.")
+      } else if(statsJSON.result === "error_datasource") {
+        return Promise.resolve("Error - file could not be read or parsed.")
+      } else {
+        return Promise.resolve("Rows: " + statsJSON.rows + ", Columns: " + statsJSON.columns)
+      }
     })
 }
 
 let weather : REPLFunction
 weather = function(args : Array<string>): Promise<string> {
-  if(args.length != 2) {
+  if(args.length !== 2) {
     return Promise.resolve("Error - requires 2 arguments, latitude and longitude.")
   }
   return fetch(BACKEND_URL + "/weather?lat=" + args[0] + "&lon=" + args[1])
@@ -55,8 +74,9 @@ weather = function(args : Array<string>): Promise<string> {
         return Promise.resolve("Error - weather not able to be retrieved.");
       } else if(weatherJSON.result === "error_bad_json") {
         return Promise.resolve("Error - weather not able to be retrieved.");
+      } else {
+        return Promise.resolve(weatherJSON.temperature);
       }
-      return Promise.resolve(weatherJSON.temperature);
     })
 }
 
