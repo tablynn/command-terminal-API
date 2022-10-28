@@ -29,38 +29,17 @@ function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
     );
 }
 
-// function AddToHistory({userCommand}: {userCommand: string}) {
-//     processInput(userCommand)?.then((output) => {
-//         return (
-//             <div>
-               
-//                 <p>Command: {userCommand}</p>
-//                 <p>Output: {output}</p>
-                
-//             </div>
-//         );
-//     })
-// }
-
 function AddToHistory( {commandpair} : {commandpair: string[]}){
     const label: string = commandpair[1]
     return (
         <div className="repl-history"
             aria-label={label}>
-        <input value={"command: "+commandpair[0]} id="left" readOnly/>
-        <input value={"output: "+commandpair[1]} id="right" readOnly/>
+        <p>Command: {commandpair[0]}</p>
+        <p>Output: {commandpair[1]}</p>
+
         </div>
   );  
 }
-
-
-    // const output : string | undefined = await processInput(userCommand)
-    // return (
-    //     <div>
-    //         <p>Command: {userCommand}</p>
-    //         <p>Output: {output}</p>
-    //     </div>
-    // );
 
 
 export default function Terminal() {
@@ -70,13 +49,14 @@ export default function Terminal() {
       <div className='repl'>
         <div id="repl-history">
             {commands.map((userCommand, index) => 
-            <AddToHistory           
+            <AddToHistory          
                 commandpair={[userCommand, outputs[index]]} 
                 key={index} />)}
 
         </div>
         <hr></hr>
-            <REPLCommandBox 
+
+        <REPLCommandBox 
                 addCommand={(command: string) => {          
                     const newCommands = commands.slice(); 
                     newCommands.push(command)
@@ -87,6 +67,8 @@ export default function Terminal() {
                     setOutputs(newOutputs) }}
                     /> 
         </div>
+       
+            
     );
 }
 

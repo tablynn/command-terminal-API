@@ -16,11 +16,11 @@ export default App;
 const BACKEND_URL = "http://localhost:3232"
 
 let get : REPLFunction
-get = function(args : Array<string>): Promise<string> {
+get = async function(args : Array<string>): Promise<string> {
   if (args.length !== 1) {
     return Promise.resolve("Error - requires one argument, a filepath.");
   }
-  return fetch(`http://localhost:3232/loadcsv?filepath=${args[0]}`)
+  return fetch(BACKEND_URL + "/loadcsv?filepath=" + args[0])
     .then((loadResponse: Response) => loadResponse.json())
     .then((loadJSON) => {
       if(loadJSON.result === "error_bad_request") {
@@ -43,7 +43,7 @@ get = function(args : Array<string>): Promise<string> {
 }
 
 let stats : REPLFunction
-stats = function(args : Array<string>): Promise<string> {
+stats = async function(args : Array<string>): Promise<string> {
   if(args.length !== 0) {
     return Promise.resolve("Error - requires 0 arguments.")
   }
@@ -61,7 +61,7 @@ stats = function(args : Array<string>): Promise<string> {
 }
 
 let weather : REPLFunction
-weather = function(args : Array<string>): Promise<string> {
+weather = async function(args : Array<string>): Promise<string> {
   if(args.length !== 2) {
     return Promise.resolve("Error - requires 2 arguments, latitude and longitude.")
   }
