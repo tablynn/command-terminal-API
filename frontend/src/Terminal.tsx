@@ -3,9 +3,10 @@ import React, { useState, Dispatch, SetStateAction } from 'react';
 
 interface NewCommandProps {
     addCommand: (input: string) => any
+    addOutput: (output: string) => any,
 }
 
-function REPLCommandBox({addCommand}: NewCommandProps): JSX.Element {
+function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
     const [command, setCommand] = useState<string>("");
     return(
         <div className="repl-input">
@@ -17,8 +18,8 @@ function REPLCommandBox({addCommand}: NewCommandProps): JSX.Element {
             </input>
             <button onClick={() => { 
                 if (command != null) {
-                    processInput(command)
                     addCommand(command)
+                    processInput(command, addOutput)
                     setCommand("")
                 }}}
             id="submit-button">
@@ -28,15 +29,30 @@ function REPLCommandBox({addCommand}: NewCommandProps): JSX.Element {
     );
 }
 
-function AddToHistory({userCommand}: {userCommand: string}) {
-    processInput(userCommand)?.then((output) => {
-        return (
-            <div>
-                <p>Command: {userCommand}</p>
-                <p>Output: {output}</p>
-            </div>
-        );
-    })
+// function AddToHistory({userCommand}: {userCommand: string}) {
+//     processInput(userCommand)?.then((output) => {
+//         return (
+//             <div>
+               
+//                 <p>Command: {userCommand}</p>
+//                 <p>Output: {output}</p>
+                
+//             </div>
+//         );
+//     })
+// }
+
+function AddToHistory( {commandpair} : {commandpair: string[]}){
+    const label: string = commandpair[1]
+    return (
+        <div className="repl-history"
+            aria-label={label}>
+        <input value={"command: "+commandpair[0]} id="left" readOnly/>
+        <input value={"output: "+commandpair[1]} id="right" readOnly/>
+        </div>
+  );  
+}
+
 
     // const output : string | undefined = await processInput(userCommand)
     // return (
@@ -45,24 +61,31 @@ function AddToHistory({userCommand}: {userCommand: string}) {
     //         <p>Output: {output}</p>
     //     </div>
     // );
-}
+
 
 export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
+    const [outputs, setOutputs] = useState<string[]>([]);
     return (
       <div className='repl'>
         <div id="repl-history">
             {commands.map((userCommand, index) => 
             <AddToHistory           
-                userCommand={userCommand} 
+                commandpair={[userCommand, outputs[index]]} 
                 key={index} />)}
+
         </div>
         <hr></hr>
             <REPLCommandBox 
                 addCommand={(command: string) => {          
                     const newCommands = commands.slice(); 
                     newCommands.push(command)
-                    setCommands(newCommands) }} /> 
+                    setCommands(newCommands) }}
+                addOutput={(output: string) => {
+                    const newOutputs = outputs.slice(); // return copy of array
+                    newOutputs.push(output)
+                    setOutputs(newOutputs) }}
+                    /> 
         </div>
     );
 }
@@ -75,12 +98,20 @@ export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
     commands.set(endpoint, commandFunc);
 }
 
-function processInput(userInput: string) {
+async function processInput(userInput: string, addOutput: (output:string) => any) {
     const input: string[] = userInput.split(" ");
     const commandType: string | undefined = input[0];
     const args: string[] = input.slice(1);
+
+    let result: string = ""
     const command: REPLFunction | undefined = commands.get(commandType)
     if(command !== undefined) {
-        return command(args)
-    } 
+        console.log(command)
+        result = await command(args)
+    } else {
+        console.log("Errorrrrrrr")
+        result = "Error - unknown command."
+    }
+
+    addOutput(result)
 }
