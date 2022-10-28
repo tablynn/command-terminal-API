@@ -2,11 +2,10 @@ import './styles/Terminal.css';
 import React, { useState, Dispatch, SetStateAction } from 'react';
 
 interface NewCommandProps {
-    addCommand: (input: string) => any,
-    setNotification: Dispatch<SetStateAction<string>>
+    addCommand: (input: string) => any
 }
 
-function REPLCommandBox({addCommand, setNotification}: NewCommandProps): JSX.Element {
+function REPLCommandBox({addCommand}: NewCommandProps): JSX.Element {
     const [command, setCommand] = useState<string>("");
     return(
         <div className="repl-input">
@@ -18,9 +17,8 @@ function REPLCommandBox({addCommand, setNotification}: NewCommandProps): JSX.Ele
             </input>
             <button onClick={() => { 
                 if (command != null) {
+                    processInput(command)
                     addCommand(command)
-                    setCommand("")
-                    setNotification("")
                     setCommand("")
                 }}}
             id="submit-button">
@@ -31,18 +29,18 @@ function REPLCommandBox({addCommand, setNotification}: NewCommandProps): JSX.Ele
 }
 
 function AddToHistory({userCommand}: {userCommand: string}) {
-    const result: string = processInput(userCommand)
-    return (
-        <div>
-            <p>Command: {userCommand}</p>
-            <p>Output: {result}</p>
-        </div>
-    );
+    processInput(userCommand)?.then((output) => {
+        return (
+            <div>
+                <p>Command: {userCommand}</p>
+                <p>Output: {output}</p>
+            </div>
+        );
+    })
 }
 
 export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
-    const [notification, setNotification] = useState('');
     return (
       <div className='repl'>
         <div id="repl-history">
@@ -53,22 +51,18 @@ export default function Terminal() {
         </div>
         <hr></hr>
             <REPLCommandBox 
-                setNotification={setNotification}
                 addCommand={(command: string) => {          
                     const newCommands = commands.slice(); 
                     newCommands.push(command)
                     setCommands(newCommands) }} /> 
-            {notification} 
         </div>
     );
 }
 
 const commands: Map<string, REPLFunction> = new Map<string, REPLFunction>();
-
 export interface REPLFunction {    
     (args: Array<string>): Promise<string>;
 }
-
 export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
     commands.set(endpoint, commandFunc);
 }
@@ -78,9 +72,7 @@ function processInput(userInput: string) {
     const commandType: string | undefined = input[0];
     const args: string[] = input.slice(1);
     const command: REPLFunction | undefined = commands.get(commandType)
-    if(command != null) {
+    if(command !== undefined) {
         return command(args)
-    } else {
-        return "Error - unknown command"
-    }
+    } 
 }
