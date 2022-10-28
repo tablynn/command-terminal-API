@@ -20,7 +20,7 @@ get = function(args : Array<string>): Promise<string> {
   if (args.length !== 1) {
     return Promise.resolve("Error - requires one argument, a filepath.");
   }
-  return fetch(`http://localhost:3232/loadCSV?filepath=${args[0]}`)
+  return fetch(`http://localhost:3232/loadcsv?filepath=${args[0]}`)
     .then((loadResponse: Response) => loadResponse.json())
     .then((loadJSON) => {
       if(loadJSON.result === "error_bad_request") {
