@@ -24,9 +24,10 @@ public class Server {
     // Creates a shared state for load and get processes
     CSVData data = new CSVData();
 
-    // Setting up the handlers for the GET loadCSV, getCSV, and weather endpoints
+    // Setting up the handlers for the GET loadCSV, getCSV, stats, and weather endpoints
     Spark.get("loadcsv", new LoadHandler(data));
     Spark.get("getcsv", new GetHandler(data));
+    Spark.get("stats", new StatsHandler(data));
     Spark.get("weather", new WeatherHandler());
     Spark.init();
     Spark.awaitInitialization();
