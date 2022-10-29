@@ -127,7 +127,7 @@ test('get with invalid file path', async () => {
     userEvent.click(submitButton);
   
     const commandText = await screen.findByText(new RegExp("get data/stars/random.csv"));
-    const outputElem = await screen.findByText(new RegExp("Error - file could not be found or accessed."));
+    const outputElem = await screen.findByText(new RegExp("Error - file could not be read or parsed."));
   
     expect(commandText).toBeInTheDocument();   
     expect(outputElem).toBeInTheDocument();   
@@ -141,8 +141,25 @@ test('get with file not in the data folder', async () => {
     userEvent.click(submitButton);
   
     const commandText = await screen.findByText(new RegExp("get random/stars/random.csv"));
-    const outputElem = await screen.findByText(new RegExp("Error - file could not be found or accessed."));
+    const outputElem = await screen.findByText(new RegExp("Error - file could not be read or parsed."));
   
     expect(commandText).toBeInTheDocument();   
     expect(outputElem).toBeInTheDocument();   
 });
+
+test("calling stats with a CSV", async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+  
+    userEvent.type(textbox, "get data/stars/one-star.csv");
+    userEvent.click(submitButton);  
+    userEvent.type(textbox, "stats");
+    userEvent.click(submitButton);
+  
+    const statsCommand = await screen.findByText(new RegExp("stats"));
+    const statsOutputElem = await screen.findByText(new RegExp("Rows: 1, Columns: 5"));
+    expect(statsCommand).toBeInTheDocument();   
+    expect(statsOutputElem).toBeInTheDocument();   
+});
+
+

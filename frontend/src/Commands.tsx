@@ -1,4 +1,4 @@
-import {registerCommand, REPLFunction} from './Terminal';
+import {registerCommand, REPLFunction, commands} from './Terminal';
 
 const BACKEND_URL = "http://localhost:3232"
 
@@ -63,7 +63,3 @@ export const weather: REPLFunction = (args: string[]): Promise<string> => {
       }
     })
 }
-
-registerCommand("get", get);
-registerCommand("stats", stats);
-registerCommand("weather", weather);
