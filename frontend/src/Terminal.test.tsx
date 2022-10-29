@@ -91,6 +91,19 @@ test('running an invalid command', async () => {
     expect(outputElem).toBeInTheDocument();   
 });
 
+test("calling stats without a CSV", async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+
+    userEvent.type(textbox, "stats");
+    userEvent.click(submitButton);
+  
+    const statsCommand = await screen.findByText(new RegExp("stats"));
+    const statsOutputElem = await screen.findByText(new RegExp("Error - no file is loaded."));
+    expect(statsCommand).toBeInTheDocument();   
+    expect(statsOutputElem).toBeInTheDocument();   
+});
+
 test('get with more arguments than required', async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
@@ -151,15 +164,13 @@ test("calling stats with a CSV", async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
   
-    userEvent.type(textbox, "get data/stars/one-star.csv");
+    userEvent.type(textbox, "get data/stars/four-stars.csv");
     userEvent.click(submitButton);  
     userEvent.type(textbox, "stats");
     userEvent.click(submitButton);
   
     const statsCommand = await screen.findByText(new RegExp("stats"));
-    const statsOutputElem = await screen.findByText(new RegExp("Rows: 1, Columns: 5"));
+    const statsOutputElem = await screen.findByText(new RegExp("Rows: 4, Columns: 5"));
     expect(statsCommand).toBeInTheDocument();   
     expect(statsOutputElem).toBeInTheDocument();   
 });
-
-

@@ -60,13 +60,13 @@ public class LoadHandler implements Route {
       CSVParser<List<String>> parser = new CSVParser<>(fr, new ListStringFactory());
       List<List<String>> fileData = parser.create();
       this.data.setData(fileData);
-      this.data.setIsLoaded(true);
     } catch (FactoryFailureException e) {
       return loadResponse("error_datasource");
     } catch (IOException e) {
       return loadResponse("error_datasource");
     }
 
+    this.data.setIsLoaded(true);
     return loadResponse("success");
   }
 

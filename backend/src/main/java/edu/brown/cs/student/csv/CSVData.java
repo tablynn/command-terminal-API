@@ -18,7 +18,7 @@ public class CSVData {
    */
   public CSVData(List<List<String>> data) {
     this.data = data;
-    this.isLoaded = null;
+    this.isLoaded = false;
   }
 
   public CSVData() {
