@@ -19,7 +19,7 @@ const buttonAria: string = "press to input command";
  */
 interface NewCommandProps {
     addCommand: (input: string) => any
-    addOutput: (output: string) => any,
+    addOutput: (output: string | JSX.Element) => any,
 }
 
 /**
@@ -79,7 +79,7 @@ function AddToHistory( {commandpair} : {commandpair: string[]}){
  */
 export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
-    const [outputs, setOutputs] = useState<string[]>([]);
+    const [outputs, setOutputs] = useState<any[]>([]);
     return (
       <div className='repl'
            aria-label={replAria}>
@@ -98,7 +98,7 @@ export default function Terminal() {
                     const newCommands = commands.slice(); 
                     newCommands.push(command)
                     setCommands(newCommands) }}
-                addOutput={(output: string) => {
+                addOutput={(output: string | JSX.Element) => {
                     const newOutputs = outputs.slice(); // return copy of array
                     newOutputs.push(output)
                     setOutputs(newOutputs) }}
@@ -114,7 +114,7 @@ const commands: Map<string, REPLFunction> = new Map<string, REPLFunction>();
  * This interface connects the user's command to a promise. 
  */
 export interface REPLFunction {    
-    (args: Array<string>): Promise<string>;
+    (args: Array<string>): Promise<string | JSX.Element>;
 }
 
 /**
@@ -132,12 +132,12 @@ export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
  * @param userInput the inputted command in the REPL box
  * @param addOutput the function that will add the output to a map
  */
-async function processInput(userInput: string, addOutput: (output:string) => any) {
+async function processInput(userInput: string, addOutput: (output:string | JSX.Element) => any) {
     const input: string[] = userInput.split(" ");
     const commandType: string | undefined = input[0];
     const args: string[] = input.slice(1);
 
-    let result: string = ""
+    let result: string | JSX.Element
     const command: REPLFunction | undefined = commands.get(commandType)
     if(command !== undefined) { 
         result = await command(args)

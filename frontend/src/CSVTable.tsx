@@ -1,4 +1,4 @@
-import '../styles/CSVTable.css'
+import './styles/CSVTable.css'
 import React from 'react';
 
 // Data table that represents loaded CSV data

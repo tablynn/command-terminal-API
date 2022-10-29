@@ -1,8 +1,10 @@
-import {registerCommand, REPLFunction, commands} from './Terminal';
+import CSVTable from './CSVTable';
+import { REPLFunction } from './Terminal';
+import React from 'react';
 
 const BACKEND_URL = "http://localhost:3232"
 
-export const get: REPLFunction = (args: string[]): Promise<string> => {
+export const get: REPLFunction = (args: string[]): Promise<string | JSX.Element> => {
   if (args.length !== 1) {
     return Promise.resolve("Error - requires one argument, a filepath.");
   }
@@ -21,8 +23,8 @@ export const get: REPLFunction = (args: string[]): Promise<string> => {
             return Promise.resolve("Error - no file is loaded.");
           } else if (getJSON.result === "error_datasource") {
             return Promise.resolve("Error - file could not be read or parsed.");
-          } else {
-            return Promise.resolve(getJSON.data)
+          } else if(getJSON.data instanceof Array<Array<string>>){
+            return <CSVTable tableData={getJSON.data}/>
           }
         })
     })
