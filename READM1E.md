@@ -2,6 +2,8 @@ Sprint 3: Command Terminal Webapp
 =============
 ### Authors: Calvin Eng (ceng4), Tabitha Lynn (tlynn1)
 ###### Estimated time contribution: 18 hrs
+Link to Github Repository-
+https://github.com/cs0320-f2022/sprint-3-ceng4-tlynn1
 
 ## Project Details
 Created a command terminal webapp, which makes requests to an API designed in a previous project. The REPL-based terminal allows for commands, such as "stats," "get," and "weather." The project was designed using TypeScript, CSS, HTML, React, and Java. 
@@ -19,10 +21,6 @@ https://github.com/cs0320-f2022/sprint-3-aadams39-agupt137
 
 https://github.com/cs0320-f2022/sprint-3-ahudda1-ssompal1
 - copied idea of using an outputs array to store results of commands in order to get rid of promise
-
-
-Link to Github Repository-
-https://github.com/cs0320-f2022/sprint-3-ceng4-tlynn1
 
 ## Design Choices
 
