@@ -294,22 +294,4 @@ test('stats on valid filepath', () => {
     stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
 });
 
-test('unknown commands', () => {
-    get(["data/stars/one-column.csv"]);
-    stats([]).then(result => expect(result).toBe("Rows: 5, Columns: 1"));
-
-    get(["data/stars/one-star.csv"]);
-    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
-
-    get(["data/stars/one-star.csv"]);
-    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
-
-    get(["data/stars/empty.csv"]);
-    stats([]).then(result => expect(result).toBe("Rows: 0, Columns: 0"));
-
-    get(["data/stars/one-star.csv"]);
-    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
-});
-
-
-
+test()
