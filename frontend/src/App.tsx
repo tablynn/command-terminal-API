@@ -1,5 +1,5 @@
 import React from 'react';
-import Terminal, {registerCommand, REPLFunction} from './Terminal';
+import Terminal from './Terminal';
 import './styles/App.css';
 
 function App() {

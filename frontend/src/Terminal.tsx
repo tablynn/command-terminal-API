@@ -1,5 +1,15 @@
 import './styles/Terminal.css';
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState } from 'react';
+
+/** The aria label for the overarching REPL component */
+export const replAria: string = "command rep ul";
+/** The aria label for the command history section of the REPL */
+export const historyAria: string = "history of commands processed";
+
+/** The class of the overarching REPL component */
+const replClass: string = "repl";
+/** The class of the command history section of the REPL */
+const historyClass: string = "repl-history";
 
 /**
  * This interface sets up the functions to add the inputted commands and its outputs for the
@@ -50,9 +60,8 @@ function AddToHistory( {commandpair} : {commandpair: string[]}){
     return (
         <div className="repl-history"
             aria-label={label}>
-        <p>Command: {commandpair[0]}</p>
-        <p>Output: {commandpair[1]}</p>
-
+            <p>Command: {commandpair[0]}</p>
+            <p>Output: {commandpair[1]}</p>
         </div>
   );  
 }
@@ -108,9 +117,9 @@ export interface REPLFunction {
  * @param endpoint 
  * @param commandFunc 
  */
-// export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
-//     commands.set(endpoint, commandFunc);
-// }
+export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
+    commands.set(endpoint, commandFunc);
+}
 
 /**
  * This method processes the user input from the command box, splitting on the space and
@@ -125,11 +134,9 @@ async function processInput(userInput: string, addOutput: (output:string) => any
 
     let result: string = ""
     const command: REPLFunction | undefined = commands.get(commandType)
-    if(command !== undefined) { // if the first word is a valid command
-        console.log(command)
+    if(command !== undefined) { 
         result = await command(args)
     } else {
-        console.log("Error- unknown command.")
         result = "Error - unknown command."
     }
 

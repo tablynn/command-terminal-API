@@ -1,9 +1,8 @@
-
+import {registerCommand, REPLFunction} from './Terminal';
 
 const BACKEND_URL = "http://localhost:3232"
 
-let get : REPLFunction
-get = async function(args : Array<string>): Promise<string> {
+export const get: REPLFunction = (args: string[]): Promise<string> => {
   if (args.length !== 1) {
     return Promise.resolve("Error - requires one argument, a filepath.");
   }
@@ -29,8 +28,7 @@ get = async function(args : Array<string>): Promise<string> {
     })
 }
 
-let stats : REPLFunction
-stats = async function(args : Array<string>): Promise<string> {
+export const stats: REPLFunction = (args: string[]): Promise<string> => {
   if(args.length !== 0) {
     return Promise.resolve("Error - requires 0 arguments.")
   }
@@ -47,8 +45,7 @@ stats = async function(args : Array<string>): Promise<string> {
     })
 }
 
-let weather : REPLFunction
-weather = async function(args : Array<string>): Promise<string> {
+export const weather: REPLFunction = (args: string[]): Promise<string> => {
   if(args.length !== 2) {
     return Promise.resolve("Error - requires 2 arguments, latitude and longitude.")
   }

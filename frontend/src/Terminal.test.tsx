@@ -1,14 +1,19 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { within } from '@testing-library/dom'
 import '@testing-library/jest-dom';
 
-import REPL, { registerCommand, commands, processCommand, REPLFunction, replAria, historyAria } from './REPL';
+import { registerCommand } from './Terminal';
+import App from './App';
+import { get, stats, weather } from './Commands'
 
-// Setup to make sure the page gets rendered and commands are registered 
+
+// Setup to make sure the page gets rendered
 beforeEach(() => {
-    render(<REPL />);
+    render(<App />);
     registerCommand("get", get);
     registerCommand("stats", stats);
     registerCommand("weather", weather);
-  });
+});
+
