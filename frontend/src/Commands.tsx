@@ -59,7 +59,7 @@ export const weather: REPLFunction = (args: string[]): Promise<string> => {
       } else if(weatherJSON.result === "error_bad_json") {
         return Promise.resolve("Error - weather not able to be retrieved.");
       } else {
-        return Promise.resolve(weatherJSON.temperature);
+        return Promise.resolve("Temperature (F): " + weatherJSON.temperature);
       }
     })
 }

@@ -1,0 +1,14 @@
+.csv-table {
+  border-collapse: collapse;
+  text-align:center;
+}
+
+.csv-cell {
+  border: 2px solid rgb(231, 187, 216);
+  padding: 8px;
+  white-space: nowrap;
+}
+
+.csv-cell:hover {
+  background-color: rgb(231, 187, 216);
+}

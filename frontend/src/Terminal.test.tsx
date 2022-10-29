@@ -8,12 +8,13 @@ import { registerCommand, replAria, historyAria, buttonAria, inputAria, REPLFunc
 import App from './App';
 import { get, stats, weather } from './Commands'
 
+registerCommand("get", get);
+registerCommand("stats", stats);
+registerCommand("weather", weather);
+
 // Setup to make sure the page gets rendered
 beforeEach(() => {
     render(<App />);
-    registerCommand("get", get);
-    registerCommand("stats", stats);
-    registerCommand("weather", weather);
 });
 
 test('renders repl overarching div', () => {
@@ -91,6 +92,19 @@ test('running an invalid command', async () => {
     expect(outputElem).toBeInTheDocument();   
 });
 
+test("calling stats with more arguments", async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+
+    userEvent.type(textbox, "stats asdf");
+    userEvent.click(submitButton);
+  
+    const statsCommand = await screen.findByText(new RegExp("stats asdf"));
+    const statsOutputElem = await screen.findByText(new RegExp("Error - requires 0 arguments."));
+    expect(statsCommand).toBeInTheDocument();   
+    expect(statsOutputElem).toBeInTheDocument();   
+});
+
 test("calling stats without a CSV", async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
@@ -100,6 +114,21 @@ test("calling stats without a CSV", async () => {
   
     const statsCommand = await screen.findByText(new RegExp("stats"));
     const statsOutputElem = await screen.findByText(new RegExp("Error - no file is loaded."));
+    expect(statsCommand).toBeInTheDocument();   
+    expect(statsOutputElem).toBeInTheDocument();   
+});
+
+test("calling stats with a CSV", async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+  
+    userEvent.type(textbox, "get data/stars/four-stars.csv");
+    userEvent.click(submitButton);  
+    userEvent.type(textbox, "stats");
+    userEvent.click(submitButton);
+  
+    const statsCommand = await screen.findByText(new RegExp("stats"));
+    const statsOutputElem = await screen.findByText(new RegExp("Rows: 4, Columns: 5"));
     expect(statsCommand).toBeInTheDocument();   
     expect(statsOutputElem).toBeInTheDocument();   
 });
@@ -160,17 +189,44 @@ test('get with file not in the data folder', async () => {
     expect(outputElem).toBeInTheDocument();   
 });
 
-test("calling stats with a CSV", async () => {
+test('calling weather with wrong number arguments', async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
-  
-    userEvent.type(textbox, "get data/stars/four-stars.csv");
-    userEvent.click(submitButton);  
-    userEvent.type(textbox, "stats");
+
+    userEvent.type(textbox, "weather 234.12342 98 234");
     userEvent.click(submitButton);
-  
-    const statsCommand = await screen.findByText(new RegExp("stats"));
-    const statsOutputElem = await screen.findByText(new RegExp("Rows: 4, Columns: 5"));
-    expect(statsCommand).toBeInTheDocument();   
-    expect(statsOutputElem).toBeInTheDocument();   
+
+    const commandText = await screen.findByText(new RegExp("weather 234.12342 98 234"));
+    const outputElem = await screen.findByText(new RegExp("Error - requires 2 arguments, latitude and longitude."));
+
+    expect(commandText).toBeInTheDocument();   
+    expect(outputElem).toBeInTheDocument(); 
+});
+
+test('calling weather with invalid longitude/latitude', async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+
+    userEvent.type(textbox, "weather 38 77");
+    userEvent.click(submitButton);
+
+    const commandText = await screen.findByText(new RegExp("weather 38 77"));
+    const outputElem = await screen.findByText(new RegExp("Error - weather not able to be retrieved."));
+
+    expect(commandText).toBeInTheDocument();   
+    expect(outputElem).toBeInTheDocument(); 
+  });
+
+test('calling weather with proper arguments', async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+
+    userEvent.type(textbox, "weather 38 -77");
+    userEvent.click(submitButton);
+
+    const commandText = await screen.findByText(new RegExp("weather 38 -77"));
+    const outputElem = await screen.findByText(new RegExp("Temperature"));
+
+    expect(commandText).toBeInTheDocument();   
+    expect(outputElem).toBeInTheDocument(); 
 });
