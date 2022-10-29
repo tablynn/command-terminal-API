@@ -1,15 +1,17 @@
 import './styles/Terminal.css';
 import React, { useState } from 'react';
+export {replAria, historyAria, inputDivAria, inputAria, buttonAria, commands, processInput};
 
 /** The aria label for the overarching REPL component */
-export const replAria: string = "command rep ul";
+const replAria: string = "command rep ul";
 /** The aria label for the command history section of the REPL */
-export const historyAria: string = "history of commands processed";
-
-/** The class of the overarching REPL component */
-const replClass: string = "repl";
-/** The class of the command history section of the REPL */
-const historyClass: string = "repl-history";
+const historyAria: string = "history of commands processed";
+/** The aria label for the outer ovearching component containing input elements. */
+const inputDivAria: string = "input components of rep ul";
+/** The aria label for the text input component for entering commands. */
+const inputAria: string = "enter command here";
+/** The aria label for the button for submitting commands. */
+const buttonAria: string = "press to input command";
 
 /**
  * This interface sets up the functions to add the inputted commands and its outputs for the
@@ -30,12 +32,14 @@ interface NewCommandProps {
 function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
     const [command, setCommand] = useState<string>("");
     return(
-        <div className="repl-input">
+        <div className="repl-input"
+             aria-label={inputDivAria}>
             <input type="text" 
                    value={command}
                    onChange={(e) => setCommand(e.target.value)}
                    placeholder="Enter command here!" 
-                   id="repl-command-box">
+                   id="repl-command-box"
+                   aria-label={inputAria}>
             </input>
             <button onClick={() => { 
                 if (command != null) {
@@ -43,7 +47,8 @@ function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
                     processInput(command, addOutput)
                     setCommand("")
                 }}}
-            id="submit-button">
+            id="submit-button"
+            aria-label={buttonAria}>
             Submit
             </button>
         </div>
@@ -76,8 +81,10 @@ export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
     const [outputs, setOutputs] = useState<string[]>([]);
     return (
-      <div className='repl'>
-        <div id="repl-history">
+      <div className='repl'
+           aria-label={replAria}>
+        <div id="repl-history"
+             aria-label={historyAria}>
             {commands.map((userCommand, index) => 
             <AddToHistory          
                 commandpair={[userCommand, outputs[index]]} 
@@ -97,8 +104,6 @@ export default function Terminal() {
                     setOutputs(newOutputs) }}
                     /> 
         </div>
-       
-            
     );
 }
 
