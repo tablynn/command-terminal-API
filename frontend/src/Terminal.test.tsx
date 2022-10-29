@@ -294,4 +294,6 @@ test('stats on valid filepath', () => {
     stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
 });
 
-test()
+test('weather on valid longitude and latitude', () => {
+    weather(["38", "-77"]).then(result => expect(result).toContain("Temperature"));
+});
