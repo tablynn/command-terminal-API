@@ -1,7 +1,7 @@
 import './styles/Terminal.css';
 import React, { useState } from 'react';
 import { JsxEmit } from 'typescript';
-export {replAria, historyAria, inputDivAria, inputAria, buttonAria, commands, processInput};
+export {replAria, historyAria, inputDivAria, inputAria, buttonAria, commands, processInput, Terminal};
 
 /** The aria label for the overarching REPL component */
 const replAria: string = "command rep ul";

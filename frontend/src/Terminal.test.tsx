@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
-import { registerCommand, replAria, historyAria, buttonAria, inputAria, REPLFunction, commands, processInput } from './Terminal';
+import { registerCommand, replAria, historyAria, buttonAria, inputAria, REPLFunction, commands, processInput, Terminal } from './Terminal';
 import App from './App';
 import { get, stats, weather } from './Commands'
 import {tableAria} from './CSVTable';
@@ -35,6 +35,22 @@ test('renders button', () => {
 test('renders repl command box', () => {
     const textboxElement = screen.getByRole('textbox', {name: inputAria});
     expect(textboxElement).toBeInTheDocument();
+});
+
+test('input clears when button is pressed', () => {
+    render(<Terminal/>);
+    const button = screen.getByRole('button', {name: buttonAria});
+    const textbox = screen.getByRole("textbox", {name: inputAria});
+    if(!(textbox instanceof HTMLInputElement)) {
+        fail("Text box element found is not an input element.");
+    }
+
+    const typed: string = "meow meow purrr";
+    userEvent.type(textbox, typed);
+    expect(textbox.value).toBe(typed);
+
+    userEvent.click(button);
+    expect(textbox.value).toBe("");
 });
 
 test('registering a new command', async () => {
