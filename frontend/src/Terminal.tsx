@@ -1,11 +1,22 @@
 import './styles/Terminal.css';
 import React, { useState, Dispatch, SetStateAction } from 'react';
 
+/**
+ * This interface sets up the functions to add the inputted commands and its outputs for the
+ * REPL command box.
+ */
 interface NewCommandProps {
     addCommand: (input: string) => any
     addOutput: (output: string) => any,
 }
 
+/**
+ * This method prepares a region of the page to hold the command input box, telling the user
+ * where to enter the command. It also handles the button click, processing the inputted
+ * text through addCommand and addOutput functions.
+ * @param param0 the functions to add commands and add outputs to a map
+ * @returns the command input box and the submit button
+ */
 function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
     const [command, setCommand] = useState<string>("");
     return(
@@ -29,6 +40,11 @@ function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
     );
 }
 
+/**
+ * This method takes in the input and output and adds it to the web page.
+ * @param param0 the command pair
+ * @returns the inputted command and the processed output
+ */
 function AddToHistory( {commandpair} : {commandpair: string[]}){
     const label: string = commandpair[1]
     return (
@@ -41,7 +57,12 @@ function AddToHistory( {commandpair} : {commandpair: string[]}){
   );  
 }
 
-
+/**
+ * This function sets up the majority of our web page, preparing the region to hold 
+ * the repl-history. It calls AddToHistory on the user command and its processed output. It 
+ * creates the REPLCommandBox, adding the commands and outputs to new maps. 
+ * @returns the repl-history and repl command box
+ */
 export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
     const [outputs, setOutputs] = useState<string[]>([]);
@@ -72,14 +93,31 @@ export default function Terminal() {
     );
 }
 
+
 const commands: Map<string, REPLFunction> = new Map<string, REPLFunction>();
+
+/**
+ * This interface connects the user's command to a promise. 
+ */
 export interface REPLFunction {    
     (args: Array<string>): Promise<string>;
 }
-export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
-    commands.set(endpoint, commandFunc);
-}
 
+/**
+ * This function 
+ * @param endpoint 
+ * @param commandFunc 
+ */
+// export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
+//     commands.set(endpoint, commandFunc);
+// }
+
+/**
+ * This method processes the user input from the command box, splitting on the space and
+ * adding the result as an output.
+ * @param userInput the inputted command in the REPL box
+ * @param addOutput the function that will add the output to a map
+ */
 async function processInput(userInput: string, addOutput: (output:string) => any) {
     const input: string[] = userInput.split(" ");
     const commandType: string | undefined = input[0];
@@ -87,11 +125,11 @@ async function processInput(userInput: string, addOutput: (output:string) => any
 
     let result: string = ""
     const command: REPLFunction | undefined = commands.get(commandType)
-    if(command !== undefined) {
+    if(command !== undefined) { // if the first word is a valid command
         console.log(command)
         result = await command(args)
     } else {
-        console.log("Errorrrrrrr")
+        console.log("Error- unknown command.")
         result = "Error - unknown command."
     }
 
