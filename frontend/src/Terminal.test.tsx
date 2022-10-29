@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { within } from '@testing-library/dom'
 import '@testing-library/jest-dom';
 
 import { registerCommand, replAria, historyAria, buttonAria, inputAria, REPLFunction, commands, processInput } from './Terminal';
 import App from './App';
 import { get, stats, weather } from './Commands'
+import {tableAria} from './CSVTable';
 
 registerCommand("get", get);
 registerCommand("stats", stats);
@@ -56,8 +56,8 @@ test('registering a new command', async () => {
         helloCommand(["-4", "5"]).then(value => expect(value).toBe("Error - requires 0 arguments."));
     }
 
-    let logged: string = "";
-    const addOutput = (output: string) => {logged = output};
+    let logged: string | JSX.Element = ""
+    const addOutput = (output: string | JSX.Element) => {logged = output};
   
     processInput("", addOutput);
     expect(logged).toBe("Error - unknown command.");
@@ -122,13 +122,19 @@ test("calling stats with a CSV", async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
   
-    userEvent.type(textbox, "get data/stars/four-stars.csv");
+    userEvent.type(textbox, "get data/stars/one-star.csv");
     userEvent.click(submitButton);  
+
+    const commandText = await screen.findByText(new RegExp("get data/stars/one-star.csv"));
+    const outputElem = await screen.findByRole("table", {name: tableAria});
+    expect(commandText).toBeInTheDocument();   
+    expect(outputElem).toBeInTheDocument();  
+
     userEvent.type(textbox, "stats");
     userEvent.click(submitButton);
   
     const statsCommand = await screen.findByText(new RegExp("stats"));
-    const statsOutputElem = await screen.findByText(new RegExp("Rows: 4, Columns: 5"));
+    const statsOutputElem = await screen.findByText(new RegExp("Rows: 1, Columns: 5"));
     expect(statsCommand).toBeInTheDocument();   
     expect(statsOutputElem).toBeInTheDocument();   
 });
@@ -189,6 +195,20 @@ test('get with file not in the data folder', async () => {
     expect(outputElem).toBeInTheDocument();   
 });
 
+test('get with valid CSV and page is updated', async () => {
+    const textbox = screen.getByRole('textbox', {name: inputAria});
+    const submitButton = screen.getByRole('button', {name: buttonAria});
+  
+    userEvent.type(textbox, "get data/stars/one-star.csv");
+    userEvent.click(submitButton);
+  
+    const commandText = await screen.findByText(new RegExp("get data/stars/one-star.csv"));
+    const outputElem = await screen.findByRole("table", {name: tableAria});
+  
+    expect(commandText).toBeInTheDocument();   
+    expect(outputElem).toBeInTheDocument();   
+});
+
 test('calling weather with wrong number arguments', async () => {
     const textbox = screen.getByRole('textbox', {name: inputAria});
     const submitButton = screen.getByRole('button', {name: buttonAria});
@@ -230,3 +250,66 @@ test('calling weather with proper arguments', async () => {
     expect(commandText).toBeInTheDocument();   
     expect(outputElem).toBeInTheDocument(); 
 });
+
+test('get on valid filepath', () => {
+    const CSV: string[][] = [
+        ["StarID", "ProperName", "X", "Y", "Z"],
+        ["0", "Sol", "0", "0", "0"]
+    ];
+    
+    const promise: Promise<string | JSX.Element> = get(["data/stars/one-star.csv"]);
+    promise.then(result => {
+        if(typeof result === "string") {
+            fail("get returned unexpected error message: " + result);
+        } else {
+            render(result);
+        }
+
+        for(let i = 0; i < CSV.length; i++) {
+            for(let j = 0; j < CSV[0].length; j++) {
+                const val: string = CSV[i][j];
+                const cellElem = screen.getByRole("cell", 
+                    {name: "row " + (i + 1) + ", column " + (j + 1) + " of table, value is " + val});
+                expect(cellElem).toBeInTheDocument();
+                expect(cellElem.textContent).toBe(val);
+            }
+        }
+    });
+});
+
+test('stats on valid filepath', () => {
+    get(["data/stars/one-column.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 5, Columns: 1"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+
+    get(["data/stars/empty.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 0, Columns: 0"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+});
+
+test('unknown commands', () => {
+    get(["data/stars/one-column.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 5, Columns: 1"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+
+    get(["data/stars/empty.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 0, Columns: 0"));
+
+    get(["data/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
+});
+
+
+

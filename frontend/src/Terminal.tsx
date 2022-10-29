@@ -1,5 +1,6 @@
 import './styles/Terminal.css';
 import React, { useState } from 'react';
+import { JsxEmit } from 'typescript';
 export {replAria, historyAria, inputDivAria, inputAria, buttonAria, commands, processInput};
 
 /** The aria label for the overarching REPL component */
@@ -60,15 +61,22 @@ function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
  * @param param0 the command pair
  * @returns the inputted command and the processed output
  */
-function AddToHistory( {commandpair} : {commandpair: string[]}){
-    const label: string = commandpair[1]
+function AddToHistory( {commandpair} : {commandpair: (string | JSX.Element)[]}){
+    if (typeof commandpair[1] === "string") {
+        return (
+            <div className="repl-history">
+                <p>Command: {commandpair[0]}</p>
+                <p>Output: {commandpair[1]}</p>
+            </div>
+        );  
+    }
     return (
-        <div className="repl-history"
-            aria-label={label}>
+        <div className="repl-history">
             <p>Command: {commandpair[0]}</p>
-            <p>Output: {commandpair[1]}</p>
+            <p>Output: </p>
+            {commandpair[1]}
         </div>
-  );  
+    ); 
 }
 
 /**
@@ -79,7 +87,7 @@ function AddToHistory( {commandpair} : {commandpair: string[]}){
  */
 export default function Terminal() {
     const [commands, setCommands] = useState<string[]>([]);
-    const [outputs, setOutputs] = useState<any[]>([]);
+    const [outputs, setOutputs] = useState<(string | JSX.Element)[]>([]);
     return (
       <div className='repl'
            aria-label={replAria}>
@@ -101,8 +109,7 @@ export default function Terminal() {
                 addOutput={(output: string | JSX.Element) => {
                     const newOutputs = outputs.slice(); // return copy of array
                     newOutputs.push(output)
-                    setOutputs(newOutputs) }}
-                    /> 
+                    setOutputs(newOutputs) }}/> 
         </div>
     );
 }
