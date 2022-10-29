@@ -38,7 +38,6 @@ test('renders repl command box', () => {
 });
 
 test('input clears when button is pressed', () => {
-    render(<Terminal/>);
     const button = screen.getByRole('button', {name: buttonAria});
     const textbox = screen.getByRole("textbox", {name: inputAria});
     if(!(textbox instanceof HTMLInputElement)) {
@@ -293,6 +292,14 @@ test('get on valid filepath', () => {
     });
 });
 
+test('error testing get', () => {
+    get([]).then(result => expect(result).toBe("Error - requires one argument, a filepath."));
+    get(["asdf"]).then(result => expect(result).toBe("Error - requires one argument, a filepath."));
+    get(["asdf", "asdfa"]).then(result => expect(result).toBe("Error - requires one argument, a filepath."));
+    get(["data/stars/random.csv"]).then(result => expect(result).toBe("Error - file could not be found or accessed."));
+    get(["stars/random.csv"]).then(result => expect(result).toBe("Error - file could not be read or parsed."));
+});
+
 test('stats on valid filepath', () => {
     get(["data/stars/one-column.csv"]);
     stats([]).then(result => expect(result).toBe("Rows: 5, Columns: 1"));
@@ -310,6 +317,22 @@ test('stats on valid filepath', () => {
     stats([]).then(result => expect(result).toBe("Rows: 1, Columns: 5"));
 });
 
+test('error testing stats', () => {
+    stats(["asdf"]).then(result => expect(result).toBe("Error - requires 0 arguments."));
+
+    get(["data/stars/random.csv"]);
+    stats([]).then(result => expect(result).toBe("Error - file could not be read or parsed."));
+
+    get(["random/stars/one-star.csv"]);
+    stats([]).then(result => expect(result).toBe("Error - file could not be read or parsed."));
+});
+
 test('weather on valid longitude and latitude', () => {
     weather(["38", "-77"]).then(result => expect(result).toContain("Temperature"));
+});
+
+test('error testing weather', () => {
+    weather(["38"]).then(result => expect(result).toContain("Error - requires 2 arguments, latitude and longitude."));
+    weather([]).then(result => expect(result).toContain("Error - requires 2 arguments, latitude and longitude."));
+    weather(["38", "77"]).then(result => expect(result).toContain("Error - weather not able to be retrieved."));
 });

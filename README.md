@@ -56,6 +56,9 @@ Unit tests
 - Tests calling get on a valid filepath
 - Tests stats on a valid filepath
 - Tests weather on valid longitude and longitude 
+- Tests to make sure errors are caught correctly when get is called
+- Tests to make sure errors are caught correctly when stats is called
+- Tests to make sure errors are caught correctly when weather is called
  
  
  

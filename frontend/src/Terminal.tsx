@@ -30,7 +30,7 @@ interface NewCommandProps {
  * @param param0 the functions to add commands and add outputs to a map
  * @returns the command input box and the submit button
  */
-function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
+function REPLCommandBox({ addCommand, addOutput }: NewCommandProps): JSX.Element {
     const [command, setCommand] = useState<string>("");
     return(
         <div className="repl-input"
@@ -61,7 +61,7 @@ function REPLCommandBox({addCommand, addOutput}: NewCommandProps): JSX.Element {
  * @param param0 the command pair
  * @returns the inputted command and the processed output
  */
-function AddToHistory( {commandpair} : {commandpair: (string | JSX.Element)[]}){
+function AddToHistory( {commandpair}: { commandpair: (string | JSX.Element)[]}): JSX.Element {
     if (typeof commandpair[1] === "string") {
         return (
             <div className="repl-history">
@@ -85,7 +85,7 @@ function AddToHistory( {commandpair} : {commandpair: (string | JSX.Element)[]}){
  * creates the REPLCommandBox, adding the commands and outputs to new maps. 
  * @returns the repl-history and repl command box
  */
-export default function Terminal() {
+export default function Terminal(): JSX.Element {
     const [commands, setCommands] = useState<string[]>([]);
     const [outputs, setOutputs] = useState<(string | JSX.Element)[]>([]);
     return (
@@ -129,7 +129,7 @@ export interface REPLFunction {
  * @param endpoint 
  * @param commandFunc 
  */
-export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
+export function registerCommand(endpoint: string, commandFunc : REPLFunction): void {
     commands.set(endpoint, commandFunc);
 }
 
@@ -139,7 +139,7 @@ export function registerCommand(endpoint: string, commandFunc : REPLFunction) {
  * @param userInput the inputted command in the REPL box
  * @param addOutput the function that will add the output to a map
  */
-async function processInput(userInput: string, addOutput: (output:string | JSX.Element) => any) {
+async function processInput(userInput: string, addOutput: (output:string | JSX.Element) => any): Promise<void> {
     const input: string[] = userInput.split(" ");
     const commandType: string | undefined = input[0];
     const args: string[] = input.slice(1);
