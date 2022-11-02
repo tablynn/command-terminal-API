@@ -4,6 +4,12 @@ import React from 'react';
 
 const BACKEND_URL = "http://localhost:3232"
 
+/**
+ * This function is called with the get command, calling the backend server to get the csv
+ * contents.
+ * @param args the string csv file
+ * @returns the csv contents or an error message
+ */
 export const get: REPLFunction = (args: string[]): Promise<string | JSX.Element> => {
   if (args.length !== 1) {
     return Promise.resolve("Error - requires one argument, a filepath.");
@@ -30,6 +36,11 @@ export const get: REPLFunction = (args: string[]): Promise<string | JSX.Element>
     })
 }
 
+/**
+ * This function is called with the stats command, calling the backend server to get the number of
+ * rows and columns of the last loaded csv file.
+ * @returns the number of rows and columns of the file or an error message
+ */
 export const stats: REPLFunction = (args: string[]): Promise<string> => {
   if(args.length !== 0) {
     return Promise.resolve("Error - requires 0 arguments.")
@@ -47,6 +58,12 @@ export const stats: REPLFunction = (args: string[]): Promise<string> => {
     })
 }
 
+/**
+ * This function is called with the weather command, calling the backend server to get the weather
+ * at the specified latitude and longitude.
+ * @param args the latitude and longitude
+ * @returns the temperature of the given location or an error message
+ */
 export const weather: REPLFunction = (args: string[]): Promise<string> => {
   if(args.length !== 2) {
     return Promise.resolve("Error - requires 2 arguments, latitude and longitude.")
@@ -65,3 +82,56 @@ export const weather: REPLFunction = (args: string[]): Promise<string> => {
       }
     })
 }
+
+/**
+ * This function mocks the get function, returning the contents of the file, data/stars/one-star.csv. 
+ * @param args the string csv file
+ * @returns contents of data/stars/one-star.csv
+ */
+export const mockGet: REPLFunction = (args: string[]): Promise<string | JSX.Element> => {
+  if (args.length !== 1) {
+    return Promise.resolve("Error - requires one argument, a filepath.");
+  }
+  else{
+    if(args[0] == "data/stars/one-star.csv"){
+      return Promise.resolve("[0,Sol,0,0,0]")
+    }
+    else{
+      return Promise.resolve("Error - file could not be read or parsed.")
+    }
+
+  }
+}
+
+/**
+ * This function mocks the stats function, returning the rows/columns of the file, data/stars/one-star.csv. 
+ * @returns rows and columns of data/stars/one-star.csv
+ */
+export const mockStats: REPLFunction = (args: string[]): Promise<string | JSX.Element> => {
+  if(args.length !== 0) {
+    return Promise.resolve("Error - requires 0 arguments.")
+  }
+  else{
+    return Promise.resolve("Rows: 1, Columns: 5")
+  }
+}
+
+/**
+ * This function mocks the weather function, returning the weather as 61 degrees.
+ * @param args the latitude and longitude 
+ * @returns the temperature as 61
+ */
+export const mockWeather: REPLFunction = (args: string[]): Promise<string> => {
+  if(args.length !== 2) {
+    return Promise.resolve("Error - requires 2 arguments, latitude and longitude.")
+  }
+  else {
+    if(args[0] == "38" && args[1] == "-77"){
+      return Promise.resolve("61")
+    }
+    else{
+      return Promise.resolve("Error - file could not be read or parsed.")
+    }
+  }
+}
+

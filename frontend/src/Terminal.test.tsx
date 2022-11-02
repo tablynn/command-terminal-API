@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 
 import { registerCommand, replAria, historyAria, buttonAria, inputAria, REPLFunction, commands, processInput, Terminal } from './Terminal';
 import App from './App';
-import { get, stats, weather } from './Commands'
+import { get, stats, weather, mockGet, mockStats } from './Commands'
 import {tableAria} from './CSVTable';
 
 registerCommand("get", get);
@@ -17,10 +17,11 @@ beforeEach(() => {
     render(<App />);
 });
 
+ 
 test('renders repl overarching div', () => {
     const replDiv = screen.getByRole(/.*/, {name: replAria});
     expect(replDiv).toBeInTheDocument();
-});
+}); 
 
 test('renders repl command history', () => {
     const replHistory = screen.getByRole(/.*/, {name: historyAria});
@@ -335,4 +336,7 @@ test('error testing weather', () => {
     weather(["38"]).then(result => expect(result).toContain("Error - requires 2 arguments, latitude and longitude."));
     weather([]).then(result => expect(result).toContain("Error - requires 2 arguments, latitude and longitude."));
     weather(["38", "77"]).then(result => expect(result).toContain("Error - weather not able to be retrieved."));
-});
+}); 
+
+
+
